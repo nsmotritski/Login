@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+    <suite name="Pen tests">
+        <test name="Check that it is possible to login to the email">
+            <parameter name="login" value=""/>
+            <parameter name="password" value="150907"/>
+            <classes>
+                <class name="EmailLoginTest" />
+            </classes>
+        </test>
+    </suite>
+</test>
