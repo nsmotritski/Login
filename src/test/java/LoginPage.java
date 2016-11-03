@@ -2,18 +2,32 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.io.File;
+
 /**
  * Created by Николай on 02.11.2016.
  */
 public class LoginPage {
-    public static WebElement logininput;
-    public static WebElement passwordinput;
-    public static WebElement submitbutton;
+    public static WebElement loginInput;
+    public static WebElement passwordInput;
+    public static WebElement submitButton;
 
     public static void initializeLoginPage(WebDriver driver) {
-        logininput = driver.findElement(By.id("username"));
-        passwordinput = driver.findElement(By.id("password"));
-        submitbutton = driver.findElement(By.name("SubmitCreds"));
+        loginInput = driver.findElement(By.id("username"));
+        passwordInput = driver.findElement(By.id("password"));
+        submitButton = driver.findElement(By.name("SubmitCreds"));
+    }
+
+    public static void inputLoginWithDomain(String domain, String login) {
+        String fullLogin = domain + File.separator + login;
+        typeText(loginInput,fullLogin);
+    }
+
+    public static void loginToEmail (WebDriver driver, String domain, String login, String password) {
+        LoginPage.initializeLoginPage(driver);
+        LoginPage.inputLoginWithDomain(domain,login);
+        LoginPage.typeText(LoginPage.passwordInput,password);
+        LoginPage.submitButton.click();
     }
 
     public static void typeText (WebElement element, String s) {

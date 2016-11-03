@@ -1,6 +1,5 @@
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -16,6 +15,7 @@ public class EmailLoginTest {
     Properties property = new Properties();
     WebDriver driver;
     private String url;
+    private String domain;
     private String login;
     private String password;
 
@@ -28,17 +28,19 @@ public class EmailLoginTest {
             fis = new FileInputStream("src/resources/TestSuite.properties");
             property.load(fis);
 
-            this.url = property.getProperty("url");
+            url = property.getProperty("url");
+            domain = property.getProperty("domain");
             login = property.getProperty("login");
             password = property.getProperty("password");
 
             System.out.println("URL: " + url
+                    + ", DOMAIN: " + domain
                     + ", LOGIN: " + login
                     + ", PASSWORD: " + password);
         } catch (IOException e) {
             System.err.println("Error: File not found!");
         }
-        System.out.println("testClass1: before test");
+        System.out.println("EmailLoginTest: before test");
         //launching the browser and navigating to the web page
         System.out.println(this.url);
         this.driver = new ChromeDriver();
@@ -48,7 +50,7 @@ public class EmailLoginTest {
 
     @AfterTest
     public void doAfterTest() {
-        System.out.println("testClass1: after test");
+        System.out.println("EmailLoginTest: after test");
         driver.quit();
     }
 
@@ -56,13 +58,11 @@ public class EmailLoginTest {
 
     @Test
     public void TestEmailLogin() throws InterruptedException {
-        System.out.println("testClass1: test");
-        LoginPage.initializeLoginPage(driver);
-        LoginPage.typeText(LoginPage.logininput,login);
-        LoginPage.typeText(LoginPage.passwordinput,password);
-        LoginPage.submitbutton.click();
-        Thread.sleep(15000);
-        Assert.assertTrue(false);
+        System.out.println("EmailLoginTest: test");
+        LoginPage.loginToEmail(driver,domain,login,password);
+        InboxPage.initializeInboxPage(driver);
+        InboxPage.waitForElementVisible(driver,InboxPage.spanOutlookWebAccess);
+        Assert.assertTrue(InboxPage.title.contains("Smotritsky, Nikolay"));
     }
 
 }
