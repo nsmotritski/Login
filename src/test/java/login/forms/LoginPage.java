@@ -1,12 +1,11 @@
+package login.forms;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.io.File;
 
-/**
- * Created by Николай on 02.11.2016.
- */
 public class LoginPage {
     public static WebElement loginInput;
     public static WebElement passwordInput;

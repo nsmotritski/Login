@@ -1,3 +1,7 @@
+package login;
+
+import login.forms.InboxPage;
+import login.forms.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
@@ -15,12 +19,15 @@ public class EmailLoginTest {
     Properties property = new Properties();
     WebDriver driver;
     private String url;
+    private int webDriverTimeout;
     private String domain;
     private String login;
     private String password;
+    private String user;
 
-    @Parameters
+
     @BeforeTest
+    @Parameters({"domain","login","password","user"})
     public void doBeforeTest() {
         System.setProperty("webdriver.chrome.driver","src/resources/chromedriver.exe");
         //reading properties from the properties file
@@ -29,23 +36,23 @@ public class EmailLoginTest {
             property.load(fis);
 
             url = property.getProperty("url");
+            webDriverTimeout = Integer.parseInt(property.getProperty("webDriverTimeout"));
             domain = property.getProperty("domain");
             login = property.getProperty("login");
             password = property.getProperty("password");
-
-            System.out.println("URL: " + url
-                    + ", DOMAIN: " + domain
-                    + ", LOGIN: " + login
-                    + ", PASSWORD: " + password);
+            user = property.getProperty("user");
         } catch (IOException e) {
             System.err.println("Error: File not found!");
         }
         System.out.println("EmailLoginTest: before test");
+        System.out.println("URL: " + url
+                + ", DOMAIN: " + domain
+                + ", LOGIN: " + login
+                + ", PASSWORD: " + password);
         //launching the browser and navigating to the web page
         System.out.println(this.url);
         this.driver = new ChromeDriver();
-        this.driver.get("https://webmail.itransition.com");
-
+        this.driver.get(url);
     }
 
     @AfterTest
@@ -54,15 +61,12 @@ public class EmailLoginTest {
         driver.quit();
     }
 
-
-
     @Test
     public void TestEmailLogin() throws InterruptedException {
         System.out.println("EmailLoginTest: test");
         LoginPage.loginToEmail(driver,domain,login,password);
+        InboxPage.waitForElementVisible(driver,webDriverTimeout);
         InboxPage.initializeInboxPage(driver);
-        InboxPage.waitForElementVisible(driver,InboxPage.spanOutlookWebAccess);
-        Assert.assertTrue(InboxPage.title.contains("Smotritsky, Nikolay"));
+        Assert.assertEquals(InboxPage.userButton.getAttribute("aria-label"),user);
     }
-
 }
